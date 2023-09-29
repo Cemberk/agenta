@@ -3,6 +3,14 @@ from typing import Any, Dict, List
 
 from pydantic import BaseModel, Extra
 
+def open(cls):
+  def update(extension):
+    for k,v in extension.__dict__.items():
+      if k != '__dict__':
+        setattr(cls,k,v)
+    return cls
+  return update
+
 
 class InFile:
     def __init__(self, file_name: str, file_path: str):
@@ -22,8 +30,10 @@ class DictInput(dict):
     def __modify_schema__(cls, field_schema):
         field_schema.update({"x-parameter": "dict"})
 
-
+@open(str)
 class TextParam(str):
+    def __init__(self, data):
+        super
     @classmethod
     def __modify_schema__(cls, field_schema):
         field_schema.update({"x-parameter": "text"})
